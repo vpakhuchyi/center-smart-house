@@ -36,9 +36,11 @@ func main() {
 		r := mux.NewRouter()
 
 		r.HandleFunc("/devices", getDevicesHandler).Methods("GET")
-		r.HandleFunc("/devices/{id}", getDevDataHandler).Methods("GET")
+		r.HandleFunc("/devices/{id}/data", getDevDataHandler).Methods("GET")
+		r.HandleFunc("/devices/{id}/config", getDevConfigHandler).Methods("GET")
 
-		r.HandleFunc("/devices/{id}/config", postDevConfigHandler).Methods("POST")
+		r.HandleFunc("/devices/{id}/config", patchDevConfigHandler).Methods("PATCH")
+
 		//r.HandleFunc("/devices/{id}/config", getDevConfigHandler).Methods("GET")
 		//r.HandleFunc("/devices/{id}/data", httpDevConfigHandler)
 

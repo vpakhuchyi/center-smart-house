@@ -17,26 +17,27 @@
 <body>
 
 <nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="index.html">Home</a></li>
-          <li><a href="kitchen.html">Kitchen</a></li>
-          <li><a href="unassigned.html">Unassigned Devices</a></li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="kitchen.html">Kitchen</a></li>
+                <li><a href="unassigned.html">Unassigned Devices</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
 </nav>
 
 <div class="container">
@@ -100,148 +101,152 @@
 </div>
 
 <div id="container" style="height: 400px; min-width: 310px">
-<script>
-    function parseURLParams(url) {
-        var queryStart = url.indexOf("?") + 1,
-            queryEnd   = url.indexOf("#") + 1 || url.length + 1,
-            query = url.slice(queryStart, queryEnd - 1),
-            pairs = query.replace(/\+/g, " ").split("&"),
-            parms = {}, i, n, v, nv;
+    <script>
+        function parseURLParams(url) {
+            var queryStart = url.indexOf("?") + 1,
+                queryEnd = url.indexOf("#") + 1 || url.length + 1,
+                query = url.slice(queryStart, queryEnd - 1),
+                pairs = query.replace(/\+/g, " ").split("&"),
+                parms = {}, i, n, v, nv;
 
-        if (query === url || query === "") return;
+            if (query === url || query === "") return;
 
-        for (i = 0; i < pairs.length; i++) {
-            nv = pairs[i].split("=", 2);
-            n = decodeURIComponent(nv[0]);
-            v = decodeURIComponent(nv[1]);
+            for (i = 0; i < pairs.length; i++) {
+                nv = pairs[i].split("=", 2);
+                n = decodeURIComponent(nv[0]);
+                v = decodeURIComponent(nv[1]);
 
-            if (!parms.hasOwnProperty(n)) parms[n] = [];
-            parms[n].push(nv.length === 2 ? v : null);
-        }
-        return parms;
-    }
-
-    function sendDevConfig(id, turnedOn, streamOn, collectFreq, sendFreq) {
-        var xhr = new XMLHttpRequest();
-        var url = "/devices/" + id + "/config";
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                alert("Data have been delivered!");
+                if (!parms.hasOwnProperty(n)) parms[n] = [];
+                parms[n].push(nv.length === 2 ? v : null);
             }
-        };
+            return parms;
+        }
 
-        var data = JSON.stringify(
-            {
-                "turnedOn":     turnedOn,
-                "streamOn":     streamOn,
-                "collectFreq":  collectFreq,
-                "sendFreq":     sendFreq
-            });
-
-        xhr.send(data);
-    }
-
-    $(document).ready(function () {
-        var urlParams = parseURLParams(window.location.href);
-
-        $.get("/devices/" + urlParams["id"], function (data) {
-            var obj = JSON.parse(data);
-
-            document.getElementById('devType').value = obj["meta"]["type"];
-            document.getElementById('devName').value = obj["meta"]["name"];
-            document.getElementById('turnedOn').checked = obj["config"]["turnedOn"];
-            document.getElementById('collectFreq').value = obj["config"]["collectFreq"];
-            document.getElementById('sendFreq').value = obj["config"]["sendFreq"];
-
-            document.getElementById("updateBtn").onclick = function() {
-                    sendDevConfig(
-                    urlParams["id"],
-                    document.getElementById('turnedOn').checked,
-                    document.getElementById('streamOn').checked,
-                    parseFloat(document.getElementById('collectFreq').value),
-                    parseFloat(document.getElementById('sendFreq').value)
-                );
+        function sendDevConfig(id, turnedOn, streamOn, collectFreq, sendFreq) {
+            var xhr = new XMLHttpRequest();
+            var url = "/devices/" + id + "/config";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert("Data have been delivered!");
+                }
             };
 
+            var data = JSON.stringify(
+                {
+                    "turnedOn": turnedOn,
+                    "streamOn": streamOn,
+                    "collectFreq": collectFreq,
+                    "sendFreq": sendFreq
+                });
 
+            xhr.send(data);
+        }
 
-            //chart
-            Highcharts.setOptions({
-                global: {
-                    useUTC: false
-                }
-            });
+        document.getElementById("updateBtn").onclick = function () {
+            sendDevConfig(
+                urlParams["id"],
+                document.getElementById('turnedOn').checked,
+                document.getElementById('streamOn').checked,
+                parseFloat(document.getElementById('collectFreq').value),
+                parseFloat(document.getElementById('sendFreq').value)
+            );
+        };
 
-            // Create the chart
-            Highcharts.stockChart('container', {
-                chart: {
-                    events: {
-                        load: function () {
+        $(document).ready(function () {
+            var urlParams = parseURLParams(window.location.href);
 
-                            // set up the updating of the chart each second
-                            /*var series = this.series[0];
-                             setInterval(function () {
-                             var x = (new Date()).getTime(), // current time
-                             y = Math.round(Math.random() * 100);
-                             series.addPoint([x, y], true, true);
-                             }, 1000);
-                             */
-                        }
+            $.get("/devices/" + urlParams["id"] + "/data", function (data) {
+                var obj = JSON.parse(data);
+
+                document.getElementById('devType').value = obj["meta"]["type"];
+                document.getElementById('devName').value = obj["meta"]["name"];
+
+                //chart
+                Highcharts.setOptions({
+                    global: {
+                        useUTC: false
                     }
-                },
+                });
 
-                rangeSelector: {
-                    buttons: [{
-                        count: 1,
-                        type: 'minute',
-                        text: '1M'
-                    }, {
-                        count: 5,
-                        type: 'minute',
-                        text: '5M'
-                    }, {
-                        type: 'all',
-                        text: 'All'
-                    }],
-                    inputEnabled: false,
-                    selected: 0
-                },
+                // Create the chart
+                Highcharts.stockChart('container', {
+                    chart: {
+                        events: {
+                            load: function () {
 
-                exporting: {
-                    enabled: false
-                },
-
-                series: [{
-                    name: 'TempCam1',
-                    data: (function () {
-                        var data = [];
-                        for (var i = 0; i < obj["data"]["TempCam1"].length; ++i) {
-                            data.push({
-                                x: parseInt(obj["data"]["TempCam1"][i].split(':')[0]),
-                                y: parseFloat(obj["data"]["TempCam1"][i].split(':')[1])
-                            });
+                                // set up the updating of the chart each second
+                                /*var series = this.series[0];
+                                 setInterval(function () {
+                                 var x = (new Date()).getTime(), // current time
+                                 y = Math.round(Math.random() * 100);
+                                 series.addPoint([x, y], true, true);
+                                 }, 1000);
+                                 */
+                            }
                         }
-                        return data;
-                    }())
-                }, {
-                    name: 'TempCam2',
-                    data: (function () {
-                        var data = [];
-                        for (var i = 0; i < obj["data"]["TempCam2"].length; ++i) {
-                            data.push({
-                                x: parseInt(obj["data"]["TempCam2"][i].split(':')[0]),
-                                y: parseFloat(obj["data"]["TempCam2"][i].split(':')[1])
-                            });
-                        }
-                        return data;
-                    }())
-                }]
+                    },
+
+                    rangeSelector: {
+                        buttons: [{
+                            count: 1,
+                            type: 'minute',
+                            text: '1M'
+                        }, {
+                            count: 5,
+                            type: 'minute',
+                            text: '5M'
+                        }, {
+                            type: 'all',
+                            text: 'All'
+                        }],
+                        inputEnabled: false,
+                        selected: 0
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    series: [{
+                        name: 'TempCam1',
+                        data: (function () {
+                            var data = [];
+                            for (var i = 0; i < obj["data"]["TempCam1"].length; ++i) {
+                                data.push({
+                                    x: parseInt(obj["data"]["TempCam1"][i].split(':')[0]),
+                                    y: parseFloat(obj["data"]["TempCam1"][i].split(':')[1])
+                                });
+                            }
+                            return data;
+                        }())
+                    }, {
+                        name: 'TempCam2',
+                        data: (function () {
+                            var data = [];
+                            for (var i = 0; i < obj["data"]["TempCam2"].length; ++i) {
+                                data.push({
+                                    x: parseInt(obj["data"]["TempCam2"][i].split(':')[0]),
+                                    y: parseFloat(obj["data"]["TempCam2"][i].split(':')[1])
+                                });
+                            }
+                            return data;
+                        }())
+                    }]
+                })
             });
-        })
-    });
-</script>
+
+            $.get("/devices/" + urlParams["id"] + "/config", function (data) {
+                var obj = JSON.parse(data);
+
+                document.getElementById('turnedOn').checked = obj["turnedOn"];
+                document.getElementById('streamOn').checked = obj["turnedOn"];
+                document.getElementById('collectFreq').value = obj["collectFreq"];
+                document.getElementById('sendFreq').value = obj["sendFreq"];
+            });
+        });
+    </script>
 </div>
 </body>
 </html>

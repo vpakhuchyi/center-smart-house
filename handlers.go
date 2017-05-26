@@ -137,7 +137,7 @@ func getDevDataHandler(w http.ResponseWriter, r *http.Request) {
 	devParamsKeysTokens = strings.Split(devID, ":")
 	devParamsKey := devID + ":" + "params"
 
-	var device DetailedDevData
+	var device DevData
 
 	params, _ := dbClient.SMembers(devParamsKey)
 	device.Meta.Type = devParamsKeysTokens[1]
@@ -154,7 +154,8 @@ func getDevDataHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(device)
 }
 
-func postDevConfigHandler(w http.ResponseWriter, r *http.Request) {
+func patchDevConfigHandler(w http.ResponseWriter, r *http.Request) {
+	//parse json
 	vars := mux.Vars(r)
 	id := "device:" + vars["id"]
 
@@ -166,4 +167,15 @@ func postDevConfigHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Received configuration: ", config, "id: ", id)
 	w.WriteHeader(http.StatusOK)
+}
+
+func getDevConfigHandler(w http.ResponseWriter, r *http.Request) {
+	var config = Configuration{
+		TurnedOn: true,
+		StreamOn: true,
+		CollectFreq: 5,
+		SendFreq: 10,
+	}
+
+	json.NewEncoder(w).Encode(config)
 }

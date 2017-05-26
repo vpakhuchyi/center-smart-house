@@ -16,8 +16,8 @@ type Response struct {
 type Configuration struct {
 	TurnedOn	bool	`json:"turnedOn"`
 	StreamOn	bool	`json:"streamOn"`
-	CollectFreq	float64	`json:"collectFreq"`
-	SendFreq	float64	`json:"sendFreq"`
+	CollectFreq	int32	`json:"collectFreq"`
+	SendFreq	int32	`json:"sendFreq"`
 }
 
 type Metadata struct {
@@ -51,10 +51,8 @@ type DeviceView struct {
 	Data 	map[string][]string	`json:"data"`
 }
 
-type DetailedDevData struct {
+type DevData struct {
 	Site	string			`json:"site"`
 	Meta	Metadata		`json:"meta"`
-	Config	Configuration		`json:"config"`
 	Data 	map[string][]string	`json:"data"`
 }
-
