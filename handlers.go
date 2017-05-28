@@ -6,8 +6,8 @@ import (
 	"strings"
 	"net/http"
 	"strconv"
-	log "github.com/logrus"
 	"github.com/gorilla/mux"
+	"log"
 )
 
 func tcpDevHandler(conn net.Conn) {
@@ -17,7 +17,7 @@ func tcpDevHandler(conn net.Conn) {
 	for {
 		err := json.NewDecoder(conn).Decode(&req)
 		if err != nil {
-			log.Errorln(err)
+			log.Println(err)
 		}
 
 		go devTypeHandler(req)
@@ -29,7 +29,7 @@ func tcpDevHandler(conn net.Conn) {
 
 		err = json.NewEncoder(conn).Encode(&res)
 		if err != nil {
-			log.Errorln(err)
+			log.Println(err)
 		}
 	}
 }
@@ -40,11 +40,11 @@ func devTypeHandler(req Request) {
 		switch req.Meta.Type {
 		case "fridge":
 			if err := req.fridgeDataHandler(); err != nil {
-				log.Errorf("%v", err.Error)
+				log.Println("%v", err.Error)
 			}
 		case "washer":
 			if err := req.washerDataHandler(); err != nil {
-				log.Errorf("%v", err.Error)
+				log.Println("%v", err.Error)
 			}
 
 		default:

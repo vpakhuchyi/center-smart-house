@@ -2,11 +2,11 @@ package main
 
 import (
 	"net"
-	log "github.com/logrus"
 	"menteslibres.net/gosexy/redis"
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
+	"log"
 )
 
 var (
@@ -63,7 +63,7 @@ func main() {
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
-			log.Errorln(err)
+			log.Fatal(err)
 			continue
 		}
 
