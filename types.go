@@ -13,7 +13,7 @@ type Response struct {
 	Descr  string		`json:"descr"`
 }
 
-type Configuration struct {
+type DevConfig struct {
 	TurnedOn	bool	`json:"turnedOn"`
 	StreamOn	bool	`json:"streamOn"`
 	CollectFreq	int32	`json:"collectFreq"`
@@ -43,12 +43,6 @@ type WasherData struct {
 	Mode	string
 	Drying	string
 	Temp	map[int64]float32
-}
-
-type DeviceView struct {
-	Site	string			`json:"site"`
-	Meta	Metadata		`json:"meta"`
-	Data 	map[string][]string	`json:"data"`
 }
 
 type DevData struct {

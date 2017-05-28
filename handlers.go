@@ -106,8 +106,8 @@ func getDevicesHandler(w http.ResponseWriter, r *http.Request) {
 		devParamsKeysTokens[i] = strings.Split(k, ":")
 	}
 
-	var device DeviceView
-	var devices []DeviceView
+	var device DevData
+	var devices []DevData
 
 	for index, key := range devParamsKeysTokens {
 		params, _ := dbClient.SMembers(devParamsKeys[index])
@@ -159,7 +159,7 @@ func patchDevConfigHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := "device:" + vars["id"]
 
-	var config Configuration
+	var config DevConfig
 	err := json.NewDecoder(r.Body).Decode(&config)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
@@ -170,7 +170,7 @@ func patchDevConfigHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getDevConfigHandler(w http.ResponseWriter, r *http.Request) {
-	var config = Configuration{
+	var config = DevConfig{
 		TurnedOn: true,
 		StreamOn: true,
 		CollectFreq: 5,

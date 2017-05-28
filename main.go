@@ -41,9 +41,6 @@ func main() {
 
 		r.HandleFunc("/devices/{id}/config", patchDevConfigHandler).Methods("PATCH")
 
-		//r.HandleFunc("/devices/{id}/config", getDevConfigHandler).Methods("GET")
-		//r.HandleFunc("/devices/{id}/data", httpDevConfigHandler)
-
 		r.PathPrefix("/").Handler(http.FileServer(http.Dir("./view")))
 
 		srv := &http.Server{

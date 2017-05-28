@@ -13,6 +13,7 @@
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="https://code.highcharts.com/stock/highstock.js"></script>
     <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="/js/js.js"></script>
 </head>
 <body>
 
@@ -44,12 +45,9 @@
     <h2>Detailed device info</h2>
     <form class="form-horizontal">
         <div class="form-group">
-            <label for="turnedOn" class="col-sm-2 control-label">Off/on</label>
+            <label for="turnedOnBtn" class="col-sm-2 control-label">State</label>
             <div class="col-sm-10">
-                <label class="switch">
-                    <input id="turnedOn" type="checkbox">
-                    <div class="slider round"></div>
-                </label>
+                <button type="button" class="btn btn-success" id="turnedOnBtn"></button>
             </div>
         </div>
         <fieldset disabled>
@@ -83,18 +81,15 @@
         <div class="form-group">
             <label for="updateBtn" class="col-sm-2 control-label"></label>
             <div class="col-sm-10">
-                <button type="button" class="btn btn-success" id="updateBtn">Update</button>
+                <button type="button" class="btn btn-info" id="updateBtn">Update</button>
             </div>
         </div>
 
         <h4>Line chart</h4>
         <div class="form-group">
-            <label for="streamOn" class="col-sm-2 control-label">Data streaming</label>
+            <label for="streamOnBtn" class="col-sm-2 control-label">Data stream</label>
             <div class="col-sm-10">
-                <label class="switch">
-                    <input type="checkbox" id="streamOn">
-                    <div class="slider round"></div>
-                </label>
+                <button type="button" class="btn btn-success" id="streamOnBtn"></button>
             </div>
         </div>
     </form>
@@ -102,149 +97,70 @@
 
 <div id="container" style="height: 400px; min-width: 310px">
     <script>
-        function parseURLParams(url) {
-            var queryStart = url.indexOf("?") + 1,
-                queryEnd = url.indexOf("#") + 1 || url.length + 1,
-                query = url.slice(queryStart, queryEnd - 1),
-                pairs = query.replace(/\+/g, " ").split("&"),
-                parms = {}, i, n, v, nv;
-
-            if (query === url || query === "") return;
-
-            for (i = 0; i < pairs.length; i++) {
-                nv = pairs[i].split("=", 2);
-                n = decodeURIComponent(nv[0]);
-                v = decodeURIComponent(nv[1]);
-
-                if (!parms.hasOwnProperty(n)) parms[n] = [];
-                parms[n].push(nv.length === 2 ? v : null);
-            }
-            return parms;
-        }
-
-        function sendDevConfig(id, turnedOn, streamOn, collectFreq, sendFreq) {
-            var xhr = new XMLHttpRequest();
-            var url = "/devices/" + id + "/config";
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    alert("Data have been delivered!");
-                }
-            };
-
-            var data = JSON.stringify(
-                {
-                    "turnedOn": turnedOn,
-                    "streamOn": streamOn,
-                    "collectFreq": collectFreq,
-                    "sendFreq": sendFreq
-                });
-
-            xhr.send(data);
-        }
-
-        document.getElementById("updateBtn").onclick = function () {
-            sendDevConfig(
-                urlParams["id"],
-                document.getElementById('turnedOn').checked,
-                document.getElementById('streamOn').checked,
-                parseFloat(document.getElementById('collectFreq').value),
-                parseFloat(document.getElementById('sendFreq').value)
-            );
-        };
-
         $(document).ready(function () {
             var urlParams = parseURLParams(window.location.href);
 
             $.get("/devices/" + urlParams["id"] + "/data", function (data) {
                 var obj = JSON.parse(data);
-
-                document.getElementById('devType').value = obj["meta"]["type"];
-                document.getElementById('devName').value = obj["meta"]["name"];
-
-                //chart
-                Highcharts.setOptions({
-                    global: {
-                        useUTC: false
-                    }
-                });
-
-                // Create the chart
-                Highcharts.stockChart('container', {
-                    chart: {
-                        events: {
-                            load: function () {
-
-                                // set up the updating of the chart each second
-                                /*var series = this.series[0];
-                                 setInterval(function () {
-                                 var x = (new Date()).getTime(), // current time
-                                 y = Math.round(Math.random() * 100);
-                                 series.addPoint([x, y], true, true);
-                                 }, 1000);
-                                 */
-                            }
-                        }
-                    },
-
-                    rangeSelector: {
-                        buttons: [{
-                            count: 1,
-                            type: 'minute',
-                            text: '1M'
-                        }, {
-                            count: 5,
-                            type: 'minute',
-                            text: '5M'
-                        }, {
-                            type: 'all',
-                            text: 'All'
-                        }],
-                        inputEnabled: false,
-                        selected: 0
-                    },
-
-                    exporting: {
-                        enabled: false
-                    },
-
-                    series: [{
-                        name: 'TempCam1',
-                        data: (function () {
-                            var data = [];
-                            for (var i = 0; i < obj["data"]["TempCam1"].length; ++i) {
-                                data.push({
-                                    x: parseInt(obj["data"]["TempCam1"][i].split(':')[0]),
-                                    y: parseFloat(obj["data"]["TempCam1"][i].split(':')[1])
-                                });
-                            }
-                            return data;
-                        }())
-                    }, {
-                        name: 'TempCam2',
-                        data: (function () {
-                            var data = [];
-                            for (var i = 0; i < obj["data"]["TempCam2"].length; ++i) {
-                                data.push({
-                                    x: parseInt(obj["data"]["TempCam2"][i].split(':')[0]),
-                                    y: parseFloat(obj["data"]["TempCam2"][i].split(':')[1])
-                                });
-                            }
-                            return data;
-                        }())
-                    }]
-                })
+                setDevDataFields(obj);
+                printFridgeChart(obj);
             });
 
             $.get("/devices/" + urlParams["id"] + "/config", function (data) {
                 var obj = JSON.parse(data);
-
-                document.getElementById('turnedOn').checked = obj["turnedOn"];
-                document.getElementById('streamOn').checked = obj["turnedOn"];
-                document.getElementById('collectFreq').value = obj["collectFreq"];
-                document.getElementById('sendFreq').value = obj["sendFreq"];
+                setDevConfigFields(obj);
             });
+
+            document.getElementById("turnedOnBtn").onclick = function () {
+                var value = this.innerHTML;
+
+                if (value === "On") {
+                    sendDevConfigTurnedOn(
+                        urlParams["id"],
+                        false
+                    );
+
+                    this.innerHTML = "Off";
+                    this.className = "btn btn-danger";
+                } else {
+                    sendDevConfigTurnedOn(
+                        urlParams["id"],
+                        true
+                    );
+                    this.innerHTML = "On";
+                    this.className = "btn btn-success";
+                }
+            };
+
+            document.getElementById("updateBtn").onclick = function () {
+                sendDevConfigFreq(
+                    urlParams["id"],
+                    parseInt(document.getElementById('collectFreq').value),
+                    parseInt(document.getElementById('sendFreq').value)
+                );
+            };
+
+            document.getElementById("streamOnBtn").onclick = function () {
+                var value = this.innerHTML;
+
+                if (value === "On") {
+                    sendDevConfigStreamOn(
+                        urlParams["id"],
+                        false
+                    );
+
+                    this.innerHTML = "Off";
+                    this.className = "btn btn-danger";
+                } else {
+                    sendDevConfigStreamOn(
+                        urlParams["id"],
+                        true
+                    );
+                    this.innerHTML = "On";
+                    this.className = "btn btn-success";
+                }
+            };
+
         });
     </script>
 </div>
