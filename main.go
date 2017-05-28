@@ -2,7 +2,7 @@ package main
 
 import (
 	"net"
-	log "github.com/logrus"
+	log "github.com/Sirupsen/logrus"
 	"menteslibres.net/gosexy/redis"
 	"github.com/gorilla/mux"
 	"net/http"

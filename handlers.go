@@ -6,7 +6,7 @@ import (
 	"strings"
 	"net/http"
 	"strconv"
-	log "github.com/logrus"
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 )
 
